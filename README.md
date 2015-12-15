@@ -1,5 +1,6 @@
 # Shortcuts
 ## Lightweight library to handle shortcuts in a web application
+[![Code Climate](https://codeclimate.com/github/mathnogueira/Shortcuts/badges/gpa.svg)](https://codeclimate.com/github/mathnogueira/Shortcuts)
 
 This library aims to provide an easy way to use shortcuts in a web application. It has no external dependecies.[
 
