@@ -38,3 +38,27 @@ Shortcuts.bind(["Ctrl + P", "Ctrl + K"], function(e) {
 Shortcuts.start();
 </script>
 ```
+
+You can also unbind a shortcut in a easy way:
+
+```javascript
+<script>
+    // Some awesome code here...
+    // If you have defined a shortcut to the keys Ctrl + P, the statement bellow
+    // will undo it. So, the shortcut will no longer exist.
+    Shortcuts.unbind("Ctrl + P");
+    // More of awesome code here...
+</script>
+```
+You can unbind several shortcuts at the same time passing them inside an array to the unbind function,
+like this:
+
+```javascript
+<script>
+    // Some code here...
+    // Unbind several shortcuts at the same time
+    Shortcuts.unbind(["Ctrl + P", "Ctrl + K", "Alt + G"]);
+    // How did you do that?
+    // Answer: http://i.imgur.com/gBKH3cj.gif
+</script>
+```
