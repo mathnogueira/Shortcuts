@@ -3,7 +3,17 @@
     </head>
     <script src="js/shortcut.js"></script>
     <script>
-        Shortcuts.bind("Ctrl + A", function(e) {});
+        window.onshow = function(e) {
+            console.log("uahsua");
+        }
+        Shortcuts.bind("Ctrl + Shift + N", function(e) {
+            console.log("Copied!!");
+            return false;
+        });
+        Shortcuts.bind("Ctrl + /", function(e) {
+            console.log("Show help");
+            return false;
+        });
         Shortcuts.start();
     </script>
     <body>
