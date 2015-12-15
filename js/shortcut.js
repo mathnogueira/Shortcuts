@@ -29,6 +29,19 @@ Shortcuts.bind = function(array, action) {
     }
 };
 
+// Unbind a previously binded shortcut.
+// @param array array of combination of keys that trigger the action.
+Shortcuts.unbind = function(array) {
+    if (Array.isArray(array)) {
+        for (var i = 0; i < array.length; ++i) {
+            var normalizedStr = this.normalize(array[i]);
+            delete this.actions[normalizedStr];
+        }
+    } else {
+        delete this.actions[this.normalize(array)];
+    }
+};
+
 // Normalize a string.
 // It removes all the blank spaces and set all the chars as lowercase
 // @param str string to be normalized.

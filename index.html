@@ -4,7 +4,7 @@
     <script src="js/shortcut.js"></script>
     <script>
         Shortcuts.bind("Ctrl + /", function(e) {
-            console.log("Show help");
+            Shortcuts.unbind(["Ctrl + P", "Ctrl + K"]);
             return false;
         });
         Shortcuts.bind(["Ctrl + P", "Ctrl + K"], function(e) {

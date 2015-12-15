@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Example 01 - Simple shortcut</title>
+        <script src="../js/shortcut.js"></script>
+        <script>
+            var messages = ["Look, it works", "Javascript Rocks!", "Hey, how u doin\'", "What are you thinking about this lib?",
+            "ABC easy as 123", "Do you like Jackson 5?", "How about Michael Jackson?"];
+            // Add a shortcut to a function that shows a message on the textfield
+            Shortcuts.bind("Ctrl + Z", function(event) {
+                var rand = Math.floor(Math.random() * messages.length);
+                document.getElementById("message").value = messages[rand];
+                return false;
+            });
+
+            // Create shortcut to unbind the command Ctrl + Z
+            Shortcuts.bind("Ctrl + C", function(event) {
+                Shortcuts.unbind("Ctrl + Z");
+                return false;
+            });
+
+            Shortcuts.start();
+        </script>
+    </head>
+    <body>
+        <p>Press <b>Ctrl + Z</b> to show message</p>
+        <p>Press <b>Ctrl + C</b> to destroy the <b>Ctrl + Z</b> shortcut.</p>
+        Message: <input id="message" size=40 />
+    </body>
+</html>
