@@ -152,7 +152,7 @@ Shortcuts.keys = [
     { name: "insert", code: 45 },
     { name: "delete", code: 46 },
     { name: ";", code: 186 },
-    { name: "/", code: 191 },
+    { name: "/", code: 191 }
 ];
 
 var i;
