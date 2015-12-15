@@ -2,6 +2,15 @@
 // Developed by Matheus Nogueira, 2015.
 "use strict"
 
+// Add custom array function that checks if a key is inside the array
+Array.prototype.has = function(string) {
+    for (var i in this) {
+        if (this[i].name == string)
+            return true;
+    }
+    return false;
+}
+
 // Library namespace
 var Shortcuts = Shortcuts || {};
 
@@ -81,17 +90,26 @@ Shortcuts.changedState = function(event) {
     }
     // Get the string that represents the shortcut
     var shortcut = Shortcuts.normalize(keys.join(" + "));
-    console.log(shortcut);
     // Call the callback for that shortcut, if it exists
     if (Shortcuts.actions[shortcut])
         return Shortcuts.actions[shortcut](event);
     else {
-        if (Shortcuts.protected.indexOf(shortcut) >= 0) {
-            // Protected shortcut that has not been overridden
-            // Should reset all the keys to prevent problems
-            var keys = Shortcuts.getPressedKeys();
-            for (var i in keys) {
-                keys[i].pressed = false;
+        // Get the pressed keys and check if ctrl is pressed and other key
+        // is pressed. Normally, all the native shortcuts use ctrl [+shift] + letter.
+        // Shift in this case is optional.
+        // So, if we get a combination of letters that have control and other key diferent
+        // of shift and alt, reset the keys.
+        var pressedKeys = Shortcuts.getPressedKeys();
+        if (pressedKeys.length >= 2) {
+            // Check if control is a key that is pressed
+            if (pressedKeys.has("ctrl")) {
+                if (pressedKeys.length == 2 &&
+                    (pressedKeys.has("alt")) || pressedKeys.has("shift"))
+                    return true;
+            }
+            // Reset the memory
+            for (var i in pressedKeys) {
+                pressedKeys[i].pressed = false;
             }
         }
     }
@@ -156,5 +174,3 @@ for (var i in Shortcuts.keys) {
     Shortcuts.keys[i].pressed = false;
 }
 
-// Protected shortcuts
-Shortcuts.protected = ["ctrl+d", "ctrl+s", "ctrl+u", "ctrl+l", "ctrl+j"];
