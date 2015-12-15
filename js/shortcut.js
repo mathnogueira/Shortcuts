@@ -84,7 +84,8 @@ Shortcuts.getPressedKeys = function() {
 Shortcuts.changedState = function(event) {
     // Get all keys that are pressed at the moment.
     var keys = [];
-    for (var i in Shortcuts.keys) {
+    var i;
+    for (i in Shortcuts.keys) {
         if (Shortcuts.keys[i].pressed)
             keys.push(Shortcuts.keys[i].name);
     }
@@ -108,7 +109,7 @@ Shortcuts.changedState = function(event) {
                     return true;
             }
             // Reset the memory
-            for (var i in pressedKeys) {
+            for (i in pressedKeys) {
                 pressedKeys[i].pressed = false;
             }
         }
@@ -154,23 +155,24 @@ Shortcuts.keys = [
     { name: "/", code: 191 },
 ];
 
+var i;
 // Add systematicly all the missing keys
 // Numbers [0-9]
-for (var i = 0; i < 10; ++i) {
+for (i = 0; i < 10; ++i) {
     Shortcuts.keys.push({ name: ""+i, code: (48+i) });
 }
 // Letters [a-z]
-for (var i = 0; i < 26; ++i) {
+for (i = 0; i < 26; ++i) {
     Shortcuts.keys.push( { name: String.fromCharCode(65 + i), code: (65 + i) });
 }
 
 // Function keys F[1-12]
-for (var i = 0; i < 12; i++) {
+for (i = 0; i < 12; i++) {
     Shortcuts.keys.push( { name: "F" + (i+1), code: (112 + i) });
 }
 
 // Add a new property to all keys (pressed)
-for (var i in Shortcuts.keys) {
+for (i in Shortcuts.keys) {
     Shortcuts.keys[i].pressed = false;
 }
 
