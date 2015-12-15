@@ -3,16 +3,13 @@
     </head>
     <script src="js/shortcut.js"></script>
     <script>
-        window.onshow = function(e) {
-            console.log("uahsua");
-        }
-        Shortcuts.bind("Ctrl + Shift + N", function(e) {
-            console.log("Copied!!");
-            return false;
-        });
         Shortcuts.bind("Ctrl + /", function(e) {
             console.log("Show help");
             return false;
+        });
+        Shortcuts.bind(["Ctrl + P", "Ctrl + K"], function(e) {
+            document.write("Ctrl + K apertado");
+            e.preventDefault();
         });
         Shortcuts.start();
     </script>

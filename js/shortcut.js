@@ -20,7 +20,7 @@ var Shortcuts = Shortcuts || {};
 Shortcuts.bind = function(array, action) {
     // If is array, iterates it and add all of its entries
     if (Array.isArray(array)) {
-        for (var i in array) {
+        for (var i = 0; i < array.length; ++i) {
             var normalizedStr = this.normalize(array[i]);
             this.actions[normalizedStr] = action;
         }
