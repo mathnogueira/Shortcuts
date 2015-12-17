@@ -1,5 +1,6 @@
 // Library for binding shortcuts in websites
 // Developed by Matheus Nogueira, 2015.
+// Version 1.0.1
 "use strict"
 
 // Add custom array function that checks if a key is inside the array
@@ -14,6 +15,16 @@ Array.prototype.has = function(string) {
 // Library namespace
 var Shortcuts = Shortcuts || {};
 
+// Class that controls a scope of the application.
+Shortcuts.Scope = function() {
+    // List of actions of the scope
+    this.actions = [];
+};
+
+// Stack of scopes that are being used by the library.
+// It starts with the global scope
+Shortcuts.__scopeStack = [];
+
 // Binds a combination of keys to an action.
 // @param array array of combination of keys that trigger the action
 // @param action function that will be called when the action is triggered.
@@ -22,25 +33,68 @@ Shortcuts.bind = function(array, action) {
     if (Array.isArray(array)) {
         for (var i = 0; i < array.length; ++i) {
             var normalizedStr = this.normalize(array[i]);
-            this.actions[normalizedStr] = action;
+            // Add action to the current scope.
+            this.__scopeStack[0].actions[normalizedStr] = action;
         }
     } else {
-        this.actions[this.normalize(array)] = action;
+        // current scope
+        this.__scopeStack[0].actions[this.normalize(array)] = action;
     }
 };
 
 // Unbind a previously binded shortcut.
 // @param array array of combination of keys that trigger the action.
-Shortcuts.unbind = function(array) {
-    if (Array.isArray(array)) {
-        for (var i = 0; i < array.length; ++i) {
-            var normalizedStr = this.normalize(array[i]);
-            delete this.actions[normalizedStr];
-        }
+// @param recursive search all the scopes and unbind the shortcut.
+Shortcuts.unbind = function(array, recursive) {
+    if (recursive) {
+        this.__recursiveUnbind(array);
     } else {
-        delete this.actions[this.normalize(array)];
+        if (Array.isArray(array)) {
+            for (var i = 0; i < array.length; ++i) {
+                var normalizedStr = this.normalize(array[i]);
+                delete this.__scopeStack[0].actions[normalizedStr];
+            }
+        } else {
+            delete this.__scopeStack[0].actions[this.normalize(array)];
+        }
     }
 };
+
+// Unbind a shortcut or group of shortcuts from multiple scopes
+// @param array array of combination of keys that trigger the action.
+Shortcuts.__recursiveUnbind = function(array) {
+    var found = false;
+    for (var i in this.__scopeStack) {
+        if (Array.isArray(array)) {
+            for (var j = 0; j < array.length; ++j) {
+                var normalizedStr = this.normalize(array[j]);
+                if (this.__scopeStack[i].actions[normalizedStr] !== undefined)
+                    found = true;
+                delete this.__scopeStack[i].actions[normalizedStr];
+            }
+        } else {
+            var normalizedStr = this.normalize(array);
+            if (this.__scopeStack[i].actions[normalizedStr] !== undefined)
+                found = true;
+            delete this.__scopeStack[i].actions[normalizedStr];
+        }
+        if (found)
+            return;
+    }
+}
+
+// Create a new scope and stack it, so the application can use various scopes at
+// the same time, but if one shortcuts is used and it is declared in two or
+// more scopes, the newer scope's prevails.
+Shortcuts.stackScope = function() {
+    var scope = new Shortcuts.Scope();
+    this.__scopeStack.unshift(scope);
+}
+
+// Destroy the last scope created and remove it from the stack.
+Shortcuts.popScope = function() {
+    this.__scopeStack.shift();
+}
 
 // Normalize a string.
 // It removes all the blank spaces and set all the chars as lowercase
@@ -98,6 +152,8 @@ Shortcuts.changedState = function(event) {
     // Get all keys that are pressed at the moment.
     var keys = [];
     var i;
+    var found = false;
+    var action = undefined;
     for (i in Shortcuts.keys) {
         if (Shortcuts.keys[i].pressed)
             keys.push(Shortcuts.keys[i].name);
@@ -105,9 +161,16 @@ Shortcuts.changedState = function(event) {
     // Get the string that represents the shortcut
     var shortcut = Shortcuts.normalize(keys.join(" + "));
     // Call the callback for that shortcut, if it exists
-    if (Shortcuts.actions[shortcut])
-        return Shortcuts.actions[shortcut](event);
-    else {
+    // Search the function in all scopes
+    for (var k = 0; k < Shortcuts.__scopeStack.length; ++k) {
+        action = Shortcuts.__scopeStack[k].actions[shortcut];
+        if (action) {
+            found = true;
+            action(event);
+            break;
+        }
+    }
+    if (!found) {
         // Get the pressed keys and check if ctrl is pressed and other key
         // is pressed. Normally, all the native shortcuts use ctrl [+shift] + letter.
         // Shift in this case is optional.
@@ -140,9 +203,8 @@ Shortcuts.getKeyByCode = function(keyCode) {
     }
 };
 
-// Set array of actions
-Shortcuts.actions = [];
-
+// Add global scope
+Shortcuts.stackScope();
 // List of all the keys (name and code)
 Shortcuts.keys = [
     { name: "backspace", code: 8 },

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Keyboard shortcuts using multiple scopes</title>
+    <script src="../js/shortcut.js"></script>
+    <script>
+        function main() {
+            // shortcut that creates a new scope
+            Shortcuts.bind("Ctrl + S", addScope);
+
+            // Shortcut to destroy the scope added by the Ctrl + S shortcut
+            Shortcuts.bind("Ctrl + F", removeScope);
+
+            // Shortcut to print a message
+            Shortcuts.bind("Ctrl + P", function(event) {
+                document.getElementById("message").innerHTML = "I'm the global scope!";
+                event.preventDefault();
+            });
+        }
+
+        function addScope(event) {
+            Shortcuts.stackScope();
+            // Override Ctrl + P to show another message.
+            Shortcuts.bind("Ctrl + P", function(event) {
+                document.getElementById("message").innerHTML = "I'm a secondary scope!";
+                event.preventDefault();
+            });
+            event.preventDefault();
+        }
+
+        function removeScope(event) {
+            Shortcuts.popScope();
+            event.preventDefault();
+        }
+
+        Shortcuts.start();
+    </script>
+</head>
+<body onload="main()">
+    <div>Press <b>Ctrl + P</b> to print a message</div>
+    <div>Press <b>Ctrl + S</b> to stack a new scope</div>
+    <div>Press <b>Ctrl + F</b> to destroy the last scope created</div>
+    <p>My scope says: <span id="message"></span></p>
+</body>
+</html>
