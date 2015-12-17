@@ -62,3 +62,29 @@ like this:
     // Answer: http://i.imgur.com/gBKH3cj.gif
 </script>
 ```
+
+### Multiple scopes
+
+Usually, we want to be able to add new shortcuts for different screens of our application, but we do not
+want to add shortcuts in the whole application, just in a tiny part of it. In those cases, you can create
+a new scope for your shortcuts and add new shortcuts or override the existing ones.
+
+The advantages of using scopes for your application is that you avoid filling up your app
+with tons of shortcuts that are useless at most parts of your app. And when you create a new
+scope, your old shortcuts still work.
+
+To create a new scope is as simple as:
+
+```javascript
+<script>
+    // your code here...
+    // This will create a new scope that will be accessible in your application.
+    // Here you can add and override shortcuts and still access the old ones.
+    Shortcuts.stackScope();
+    // your code here...
+    // This statement will destroy the latest scope that was created
+    // So, all the changes done in the scope are destroyed.
+    Shortcuts.popScope();
+    // Continue your code.
+</script>
+```
