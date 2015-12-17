@@ -10,7 +10,7 @@
             Shortcuts.bind("Ctrl + Z", function(event) {
                 var rand = Math.floor(Math.random() * messages.length);
                 document.getElementById("message").value = messages[rand];
-                return false;
+                event.preventDefault();
             });
 
             Shortcuts.start();

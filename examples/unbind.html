@@ -10,13 +10,13 @@
             Shortcuts.bind("Ctrl + Z", function(event) {
                 var rand = Math.floor(Math.random() * messages.length);
                 document.getElementById("message").value = messages[rand];
-                return false;
+                event.preventDefault();
             });
 
             // Create shortcut to unbind the command Ctrl + Z
             Shortcuts.bind("Ctrl + C", function(event) {
                 Shortcuts.unbind("Ctrl + Z");
-                return false;
+                event.preventDefault();
             });
 
             Shortcuts.start();
